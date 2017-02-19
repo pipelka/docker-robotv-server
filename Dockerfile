@@ -24,11 +24,14 @@ RUN apt-get update && \
 	libpugixml1 libcurl3 && \
     apt-get clean
 
-RUN mkdir -p /opt && mkdir -p /data && mkdir -p /video
+RUN mkdir -p /opt && mkdir -p /data && mkdir -p /video && mkdir -p /opt/templates
 
 COPY opt /opt/
-COPY data /data/
 COPY runvdr.sh /opt/vdr/
+COPY templates/diseqc.conf /opt/templates/
+COPY templates/sources.conf /opt/templates/
+COPY templates/channels.conf /opt/templates/
+
 RUN chmod +x /opt/vdr/runvdr.sh
 
 RUN apt-get clean -y && \

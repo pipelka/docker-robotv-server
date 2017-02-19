@@ -2,10 +2,14 @@
 
 export LANG="en_US.UTF-8"
 
-CONFDIR=/data/vdr/etc
+CONFDIR=/data/etc
 
-mkdir -p ${CONFDIR}
+mkdir -p ${CONFDIR}/conf.d
 echo "0.0.0.0/0" > ${CONFDIR}/svdrphosts.conf 
+
+[ ! -f ${CONFDIR}/channels.conf ] && cp /opt/templates/channels.conf ${CONFDIR}/
+[ ! -f ${CONFDIR}/sources.conf ] && cp /opt/templates/sources.conf ${CONFDIR}/
+[ ! -f ${CONFDIR}/diseqc.conf ] && cp /opt/templates/diseqc.conf ${CONFDIR}/
 
 
 # DVBAPI configuration
@@ -16,7 +20,7 @@ echo "dvbapi.OSCamPort = ${DVBAPI_PORT}" >> ${CONFDIR}/setup.conf
 
 # ENABLE / DISABLE DVBAPI
 
-rm -f ${CONFDIR}/conf.d/50-dvbapi.conf
+rm -f ${CONFDIR}/conf.d/40-dvbapi.conf
 
 if [ "${DVBAPI_ENABLE}" = "1" ] ; then 
     echo "[dvbapi]" > ${CONFDIR}/conf.d/50-dvbapi.conf
@@ -25,7 +29,7 @@ fi
 
 # SATIP configuration
 
-mkdir -p {CONFDIR}/plugins/satip
+mkdir -p ${CONFDIR}/plugins/satip
 echo "[satip]" > ${CONFDIR}/conf.d/50-satip.conf
 
 if [ ! -z "${SATIP_NUMDEVICES}" ] ; then
@@ -46,7 +50,6 @@ if [ ! -f ${CONFDIR}/conf.d/00-vdr.conf ] ; then
     echo "--watchdog=60" >> ${CONFDIR}/conf.d/00-vdr.conf
 fi
 
-[ ! -f ${CONFDIR}/channels.conf ] && touch ${CONFDIR}/channels.conf
 
 
 # EPGSearch configuration
@@ -56,9 +59,9 @@ echo "[epgsearch]" > ${CONFDIR}/conf.d/50-epgsearch.conf
 
 # RoboTV configuration
 
-echo "[robotv]" > ${CONFDIR}/conf.d/40-robotv.conf
+mkdir -p ${CONFDIR}/plugins/robotv
+echo "[robotv]" > ${CONFDIR}/conf.d/50-robotv.conf
 
-mkdir -p {CONFDIR}/plugins/robotv
 echo "0.0.0.0/0" > ${CONFDIR}/plugins/robotv/allowed_hosts.conf
 
 echo "TimeShiftDir = ${ROBOTV_TIMESHIFTDIR}" > ${CONFDIR}/plugins/robotv/robotv.conf
