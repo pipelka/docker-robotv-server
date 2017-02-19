@@ -55,9 +55,9 @@ Configuration variables
 | DVBAPI_HOST | 127.0.0.1 | dvbapi host |
 | DVBAPI_PORT | 2000 | dvbapi host port |
 | SATIP_NUMDEVICES | 2 | number of dvb devices to open on the server |
-| SATIP_SERVER | 192.168.16.10 | SAT<IP server address |
+| SATIP_SERVER | | SAT<IP server address |
 | ROBOTV_MAXTIMESHIFTSIZE | 4000000000 | Maximum timeshift ringbuffer size in bytes |
-| ROBOTV_PICONSURL | http://192.168.16.10/picons | URL for the enigma channel icons |
+| ROBOTV_PICONSURL |  | URL for the enigma channel icons |
 | ROBOTV_SERIESFOLDER | Serien | Folder for TV shows |
 | ROBOTV_CHANNELCACHE | true | Enable caching of channel pids |
 | ROBOTV_EPGIMAGEURL | | Url for EPG images |
