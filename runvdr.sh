@@ -1,0 +1,77 @@
+#!/bin/sh
+
+export LANG="en_US.UTF-8"
+
+CONFDIR=/data/vdr/etc
+
+mkdir -p ${CONFDIR}
+echo "0.0.0.0/0" > ${CONFDIR}/svdrphosts.conf 
+
+
+# DVBAPI configuration
+
+echo "dvbapi.LogLevel = 2" > ${CONFDIR}/setup.conf
+echo "dvbapi.OSCamHost = ${DVBAPI_HOST}" >> ${CONFDIR}/setup.conf
+echo "dvbapi.OSCamPort = ${DVBAPI_PORT}" >> ${CONFDIR}/setup.conf
+
+# ENABLE / DISABLE DVBAPI
+
+rm -f ${CONFDIR}/conf.d/50-dvbapi.conf
+
+if [ "${DVBAPI_ENABLE}" = "1" ] ; then 
+    echo "[dvbapi]" > ${CONFDIR}/conf.d/50-dvbapi.conf
+fi
+
+
+# SATIP configuration
+
+mkdir -p {CONFDIR}/plugins/satip
+echo "[satip]" > ${CONFDIR}/conf.d/50-satip.conf
+
+if [ ! -z "${SATIP_NUMDEVICES}" ] ; then
+    echo "-d ${SATIP_NUMDEVICES}"
+fi
+
+if [ ! -z "${SATIP_SERVER}" ] ; then
+    echo "-s ${SATIP_SERVER}"
+fi
+
+
+# VDR configuration
+
+if [ ! -f ${CONFDIR}/conf.d/00-vdr.conf ] ; then
+    echo "[vdr]" > ${CONFDIR}/conf.d/00-vdr.conf
+    echo "--chartab=ISO-8859-9" >> ${CONFDIR}/conf.d/00-vdr.conf
+    echo "--port=6419" >> ${CONFDIR}/conf.d/00-vdr.conf
+    echo "--watchdog=60" >> ${CONFDIR}/conf.d/00-vdr.conf
+fi
+
+[ ! -f ${CONFDIR}/channels.conf ] && touch ${CONFDIR}/channels.conf
+
+
+# EPGSearch configuration
+
+echo "[epgsearch]" > ${CONFDIR}/conf.d/50-epgsearch.conf
+
+
+# RoboTV configuration
+
+echo "[robotv]" > ${CONFDIR}/conf.d/40-robotv.conf
+
+mkdir -p {CONFDIR}/plugins/robotv
+echo "0.0.0.0/0" > ${CONFDIR}/plugins/robotv/allowed_hosts.conf
+
+echo "TimeShiftDir = ${ROBOTV_TIMESHIFTDIR}" > ${CONFDIR}/plugins/robotv/robotv.conf
+echo "MaxTimeShiftSize = ${ROBOTV_MAXTIMESHIFTSIZE}" >> ${CONFDIR}/plugins/robotv/robotv.conf
+echo "SeriesFolder = ${ROBOTV_SERIESFOLDER}" >> ${CONFDIR}/plugins/robotv/robotv.conf
+echo "ChannelCache = ${ROBOTV_CHANNELCACHE}" >> ${CONFDIR}/plugins/robotv/robotv.conf
+
+if [ ! -z "${ROBOTV_PICONSURL}" ] ; then
+    echo "PiconsURL = ${ROBOTV_PICONSURL}" >> ${CONFDIR}/plugins/robotv/robotv.conf
+fi
+
+if [ ! -z "${ROBOTV_EPGIMAGEURL}" ] ; then
+    echo "EpgImageUrl = ${ROBOTV_EPGIMAGEURL}" >> ${CONFDIR}/plugins/robotv/robotv.conf
+fi
+
+/opt/vdr/bin/vdr

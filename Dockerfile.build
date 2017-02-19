@@ -1,0 +1,36 @@
+FROM debian:jessie
+MAINTAINER Alexander pipelka <alexander.pipelka@gmail.com>
+
+USER root
+
+RUN apt-get update && apt-get install --no-install-recommends -y \
+	g++ gcc git make pkg-config libfreetype6-dev ssh-client ca-certificates \
+	libfontconfig1-dev libjpeg62-turbo-dev libcap-dev gettext libncursesw5-dev \
+	libncurses5-dev libpugixml-dev libcurl4-openssl-dev
+
+RUN mkdir -p /build
+WORKDIR /build
+
+RUN git clone -b stable/2.2 https://projects.vdr-developer.org/git/vdr.git
+RUN git clone -b v0.9.103 https://github.com/pipelka/vdr-plugin-robotv.git vdr/PLUGINS/src/robotv
+RUN git clone https://github.com/manio/vdr-plugin-dvbapi.git vdr/PLUGINS/src/dvbapi
+RUN git clone https://projects.vdr-developer.org/git/vdr-plugin-epgsearch.git vdr/PLUGINS/src/epgsearch
+RUN git clone -b vdr-2.2.x https://github.com/rofafor/vdr-plugin-satip.git vdr/PLUGINS/src/satip
+
+WORKDIR vdr
+COPY templates/Make.config /build/vdr/
+RUN make -j 2
+
+RUN mkdir -p /opt/vdr
+RUN make install
+RUN rm -Rf /opt/vdr/man
+RUN rm -Rf /opt/vdr/locale/*
+
+ENV LIBS="dvbhddevice dvbsddevice epgtableid0 hello osddemo pictures rcu skincurses status svccli svcsvr svdrpdemo"
+RUN for lib in ${LIBS} ; do \
+	echo "removing /opt/vdr/lib/libvdr-$lib" ; \
+        rm -f /opt/vdr/lib/libvdr-${lib}* ; \
+    done
+
+RUN strip -s --strip-debug /opt/vdr/lib/*.so.*
+RUN strip -s --strip-debug /opt/vdr/bin/vdr
