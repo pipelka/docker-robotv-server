@@ -33,11 +33,11 @@ mkdir -p ${CONFDIR}/plugins/satip
 echo "[satip]" > ${CONFDIR}/conf.d/50-satip.conf
 
 if [ ! -z "${SATIP_NUMDEVICES}" ] ; then
-    echo "-d ${SATIP_NUMDEVICES}"
+    echo "-d ${SATIP_NUMDEVICES}" >> ${CONFDIR}/conf.d/50-satip.conf
 fi
 
 if [ ! -z "${SATIP_SERVER}" ] ; then
-    echo "-s ${SATIP_SERVER}"
+    echo "-s ${SATIP_SERVER}" >> ${CONFDIR}/conf.d/50-satip.conf
 fi
 
 
