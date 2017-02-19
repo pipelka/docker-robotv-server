@@ -27,7 +27,7 @@ RUN apt-get update && \
 RUN mkdir -p /opt && mkdir -p /data && mkdir -p /video && mkdir -p /opt/templates
 
 COPY opt /opt/
-COPY runvdr.sh /opt/vdr/
+COPY bin/runvdr.sh /opt/vdr/
 COPY templates/diseqc.conf /opt/templates/
 COPY templates/sources.conf /opt/templates/
 COPY templates/channels.conf /opt/templates/
