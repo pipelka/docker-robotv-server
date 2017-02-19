@@ -16,5 +16,5 @@ docker run \
 	-v /srv/video:/video \
 	-p 34892:34892 \
 	--device=/dev/dvb \
-	pipelka/robotv-server:0.9.103
+	pipelka/robotv-server:latest
 
