@@ -14,13 +14,22 @@ Running RoboTV Server
 
 RoboTV can run with various configurations. This one uses the local DVB devices and the dvbapi plugin to access your smartcard. It also sets an URL the clients will use to fetch channel icons (Enigma Picons). The RoboTV TCP/IP port must always be exposed.
 
+- Create the data directories on your server
+
+```
+sudo mkdir -p /srv/robotv
+sudo mkdir -p /srv/video
+```
+
+- Start the robotv-server container
+
 ```
 docker run --rm -ti \
     -e DVBAPI_ENABLE=1 \
     -e DVBAPI_HOST=192.168.100.200 \
     -e DVBAPI_PORT=2222 \
-    -e ROBOTV_PICONSURL=http://192.168.16.10/picons
-    -v /srv/vdr:/data \
+    -e ROBOTV_PICONSURL=http://192.168.16.10/picons \
+    -v /srv/robotv:/data \
     -v /srv/video:/video \
     -p 34892:34892 \
     --device=/dev/dvb \
@@ -32,7 +41,7 @@ Docker Volumes to store data
 
 | Host Location | Container | Description |
 | --- | --- | --- |
-| /srv/vdr | /data | VDR cache data and configuration |
+| /srv/robotv | /data | VDR cache data and configuration |
 | /srv/video | /video | Space for recordings |
 
 You can change these directories to meet your requirements.
