@@ -1,7 +1,7 @@
 What is this ?
 --------------
 
-The "robotv-server" docker image is a turn-key solution to deploy a headless [VDR](http://www.tvdr.de) server and all required plugins to connect [RoboTV](https://github.com/pipelka/robotv) clients.
+The "robotv-server" docker image is a turn-key solution to deploy a headless [VDR](http://www.tvdr.de) server and all required plugins to connect [roboTV](https://github.com/pipelka/robotv) clients.
 
 Prerequisites
 -------------
@@ -9,10 +9,10 @@ Prerequisites
 - Docker installation is required, see the official installation [docs](https://docs.docker.com/engine/installation/)
 - DVB card or SAT<IP server needed
 
-Running RoboTV Server
+Running roboTV Server
 ---------------------
 
-RoboTV can run with various configurations. This one uses the local DVB devices and the dvbapi plugin to access your smartcard. It also sets an URL the clients will use to fetch channel icons (Enigma Picons). The RoboTV TCP/IP port must always be exposed.
+roboTV can run with various configurations. This one uses the local DVB devices and the dvbapi plugin to access your smartcard. It also sets an URL the clients will use to fetch channel icons (Enigma Picons). The roboTV TCP/IP port must always be exposed.
 
 - Create the data directories on your server
 
@@ -59,7 +59,7 @@ Configuration variables
 | ROBOTV_MAXTIMESHIFTSIZE | 4000000000 | Maximum timeshift ringbuffer size in bytes |
 | ROBOTV_PICONSURL | http://192.168.16.10/picons | URL for the enigma channel icons |
 | ROBOTV_SERIESFOLDER | Serien | Folder for TV shows |
-| ENV ROBOTV_CHANNELCACHE | true | Enable caching of channel pids |
+| ROBOTV_CHANNELCACHE | true | Enable caching of channel pids |
 | ROBOTV_EPGIMAGEURL | | Url for EPG images |
 
 Ports in use
@@ -67,7 +67,7 @@ Ports in use
 
 | Port | Description |
 | --- | --- |
-| 34892 | RoboTV port for client communication (must always be connected) |
+| 34892 | roboTV port for client communication (must always be connected) |
 | 6419 | VDR svdrp port |
 
 Examples
@@ -110,7 +110,7 @@ docker run --rm -ti \
     pipelka/robotv-server
 ```
 
-- set RoboTV picons url
+- set eoboTV picons url
 
 ```
 docker run --rm -ti \
