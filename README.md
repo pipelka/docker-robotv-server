@@ -60,7 +60,7 @@ Configuration variables
 | ROBOTV_PICONSURL |  | URL for the enigma channel icons |
 | ROBOTV_SERIESFOLDER | Serien | Folder for TV shows |
 | ROBOTV_CHANNELCACHE | true | Enable caching of channel pids |
-| ROBOTV_EPGIMAGEURL | | Url for EPG images |
+| ROBOTV_EPGIMAGEURL | | URL for EPG images |
 
 Ports in use
 ------------
@@ -110,10 +110,15 @@ docker run --rm -ti \
     pipelka/robotv-server
 ```
 
-- set eoboTV picons url
+- use SAT<IP with dvbapi and set picons url
 
 ```
 docker run --rm -ti \
+    -e DVBAPI_ENABLE=1 \
+    -e DVBAPI_HOST=192.168.100.200 \
+    -e DVBAPI_PORT=2222 \
+    -e SATIP_SERVER=192.168.100.201 \
+    -e SATIP_NUMDEVICES=4 \
     -e ROBOTV_PICONS=http://192.168.100.202/picons \
     -v /srv/vdr:/data \
     -v /srv/video:/video \
