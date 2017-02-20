@@ -12,7 +12,7 @@ Prerequisites
 Running roboTV Server
 ---------------------
 
-roboTV can run with various configurations. This one uses the local DVB devices and the dvbapi plugin to access your smartcard. It also sets an URL clients will use to fetch channel icons (Enigma Picons). The roboTV TCP/IP port must always be exposed.
+roboTV can run with various configurations. This sample configuration uses local DVB devices and the dvbapi plugin to access your smartcard but can be configured completely different (see examples below). It also sets an URL clients will use to fetch channel icons (Enigma Picons). The roboTV TCP/IP port must always be exposed.
 
 - Create the data directories on your server
 
