@@ -2,6 +2,7 @@ FROM debian:jessie
 MAINTAINER Alexander pipelka <alexander.pipelka@gmail.com>
 
 ARG ROBOTV_VERSION=
+ARG DEBUG=
 
 USER root
 
@@ -21,7 +22,10 @@ RUN git clone https://projects.vdr-developer.org/git/vdr-plugin-epgsearch.git vd
 RUN git clone -b vdr-2.2.x https://github.com/rofafor/vdr-plugin-satip.git vdr/PLUGINS/src/satip
 
 WORKDIR vdr
-COPY templates/Make.config /build/vdr/
+COPY templates/Make.* /build/vdr/
+RUN if [ "${DEBUG}" = "1" ] ; then \
+      mv -f /build/vdr/Make.debug /build/vdr/Make.config ; \
+    fi
 RUN make -j 2
 
 RUN mkdir -p /opt/vdr
@@ -35,5 +39,8 @@ RUN for lib in ${LIBS} ; do \
         rm -f /opt/vdr/lib/libvdr-${lib}* ; \
     done
 
-RUN strip -s --strip-debug /opt/vdr/lib/*.so.*
-RUN strip -s --strip-debug /opt/vdr/bin/vdr
+RUN if [ "${DEBUG}" != "1" ] ; then \
+      strip -s --strip-debug /opt/vdr/lib/*.so.* ; \
+      strip -s --strip-debug /opt/vdr/bin/vdr ; \
+    fi
+

@@ -2,6 +2,8 @@ FROM philcryer/min-jessie
 
 MAINTAINER Alexander pipelka <alexander.pipelka@gmail.com>
 
+ARG DEBUG=
+
 USER root
 
 ENV DVBAPI_ENABLE="0"
@@ -24,6 +26,10 @@ RUN apt-get update && \
 	libpugixml1 libcurl3 && \
     apt-get clean
 
+RUN if [ "$DEBUG" = "1" ] ; then \
+      apt-get install --no-install-recommends -y gdb byobu screen tmux ; \
+    fi
+
 RUN mkdir -p /opt && mkdir -p /data && mkdir -p /video && mkdir -p /opt/templates
 
 COPY opt /opt/
@@ -33,6 +39,10 @@ COPY templates/sources.conf /opt/templates/
 COPY templates/channels.conf /opt/templates/
 
 RUN chmod +x /opt/vdr/runvdr.sh
+
+RUN if [ "$DEBUG" = "1" ] ; then \
+      touch /opt/vdr/.debug ; \
+    fi
 
 RUN apt-get clean -y && \
     apt-get autoclean -y && \

@@ -77,4 +77,9 @@ if [ ! -z "${ROBOTV_EPGIMAGEURL}" ] ; then
     echo "EpgImageUrl = ${ROBOTV_EPGIMAGEURL}" >> ${CONFDIR}/plugins/robotv/robotv.conf
 fi
 
-/opt/vdr/bin/vdr
+if [ -f /opt/vdr/.debug ] ; then
+  byobu-screen gdb -ex run --args /opt/vdr/bin/vdr
+else
+  /opt/vdr/bin/vdr
+fi
+
