@@ -23,7 +23,7 @@ echo "dvbapi.OSCamPort = ${DVBAPI_PORT}" >> ${CONFDIR}/setup.conf
 rm -f ${CONFDIR}/conf.d/40-dvbapi.conf
 
 if [ "${DVBAPI_ENABLE}" = "1" ] ; then 
-    echo "[dvbapi]" > ${CONFDIR}/conf.d/50-dvbapi.conf
+    echo "[dvbapi]" > ${CONFDIR}/conf.d/40-dvbapi.conf
 fi
 
 
