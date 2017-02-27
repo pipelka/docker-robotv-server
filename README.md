@@ -61,6 +61,7 @@ Configuration variables
 | ROBOTV_SERIESFOLDER | Serien | Folder for TV shows |
 | ROBOTV_CHANNELCACHE | true | Enable caching of channel pids |
 | ROBOTV_EPGIMAGEURL | | URL for EPG images |
+| TZ | Europe/Vienna | Timezone to use |
 
 Ports in use
 ------------

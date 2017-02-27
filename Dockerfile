@@ -16,7 +16,8 @@ ENV DVBAPI_ENABLE="0" \
     ROBOTV_PICONSURL= \
     ROBOTV_SERIESFOLDER="Serien" \
     ROBOTV_CHANNELCACHE="true" \
-    ROBOTV_EPGIMAGEURL=
+    ROBOTV_EPGIMAGEURL= \
+    TZ="Europe/Vienna"
 
 RUN apt-get update && \
     apt-get install --no-install-recommends -y \
