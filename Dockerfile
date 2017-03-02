@@ -22,7 +22,7 @@ ENV DVBAPI_ENABLE="0" \
 RUN apt-get update && \
     apt-get install --no-install-recommends -y \
 	libfreetype6 libfontconfig1 libjpeg62-turbo \
-	libpugixml1 libcurl3 libssl1.0.0 && \
+	libpugixml1 libcurl3 && \
     apt-get clean -y && \
     apt-get autoclean -y && \
     apt-get autoremove -y && \
