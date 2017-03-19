@@ -62,6 +62,7 @@ Configuration variables
 | ROBOTV_CHANNELCACHE | true | Enable caching of channel pids |
 | ROBOTV_EPGIMAGEURL | | URL for EPG images |
 | TZ | Europe/Vienna | Timezone to use |
+| LOGLEVEL | 2 | 0 = no logging, 1 = errors only, 2 = errors and info, 3 = errors, info and debug |
 
 Ports in use
 ------------
