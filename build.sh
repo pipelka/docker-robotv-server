@@ -6,13 +6,15 @@ DOCKER_BUILD=1
 IMAGE="pipelka/robotv-server:${ROBOTV_VERSION}-${DOCKER_BUILD}"
 
 DEBUG=0
+BRANCH=
 
 usage() {
     echo "build script for the 'robotv-server' docker image"
     echo ""
     echo "./build.sh"
-    echo "\t-h --help"
-    echo "\t--debug"
+    echo "\t-h --help             show this help"
+    echo "\t--debug               debug build"
+    echo "\t--branch=GIT_BRANCH   build branch 'GIT_BRANCH'"
     echo ""
 }
 
@@ -26,6 +28,9 @@ while [ "$1" != "" ]; do
             ;;
         --debug)
             DEBUG=1
+            ;;
+        --branch)
+            BRANCH=${VALUE}
             ;;
         *)
             echo "ERROR: unknown parameter \"$PARAM\""
@@ -42,6 +47,7 @@ docker build \
     --force-rm \
     --build-arg ROBOTV_VERSION=${ROBOTV_VERSION} \
     --build-arg DEBUG=${DEBUG} \
+    --build-arg BRANCH=${BRANCH} \
     -t pipelka/robotv-server-build:${ROBOTV_VERSION} \
     -f Dockerfile.build .
 

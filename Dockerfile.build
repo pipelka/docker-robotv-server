@@ -3,8 +3,11 @@ MAINTAINER Alexander pipelka <alexander.pipelka@gmail.com>
 
 ARG ROBOTV_VERSION=
 ARG DEBUG=
+ARG BRANCH=
 
 USER root
+
+ENV VERSION=v${ROBOTV_VERSION}
 
 RUN apt-get update && apt-get install --no-install-recommends -y \
 	g++ gcc git make pkg-config libfreetype6-dev ssh-client ca-certificates \
@@ -14,9 +17,10 @@ RUN apt-get update && apt-get install --no-install-recommends -y \
 RUN mkdir -p /build
 WORKDIR /build
 
+RUN echo "building roboTV version '${BRANCH:=$VERSION}'"
+
 RUN git clone -b stable/2.2 https://projects.vdr-developer.org/git/vdr.git
-RUN echo "cloning roboTV version ${ROBOTV_VERSION}"
-RUN git clone -b v${ROBOTV_VERSION} https://github.com/pipelka/vdr-plugin-robotv.git vdr/PLUGINS/src/robotv
+RUN git clone -b ${BRANCH:=$VERSION} https://github.com/pipelka/vdr-plugin-robotv.git vdr/PLUGINS/src/robotv
 RUN git clone https://github.com/manio/vdr-plugin-dvbapi.git vdr/PLUGINS/src/dvbapi && \
     cd vdr/PLUGINS/src/dvbapi && \
     git checkout 7a42b22956128734ee5bb633f4880471588fc812 && \
