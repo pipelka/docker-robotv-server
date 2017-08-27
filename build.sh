@@ -1,6 +1,6 @@
 #!/bin/sh
 
-ROBOTV_VERSION=0.10.3
+ROBOTV_VERSION=0.11.1
 DOCKER_BUILD=1
 
 IMAGE="pipelka/robotv-server:${ROBOTV_VERSION}-${DOCKER_BUILD}"
