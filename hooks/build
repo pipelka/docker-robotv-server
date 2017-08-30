@@ -1,0 +1,5 @@
+#!/bin/bash
+
+echo "=> building the roboTV docker image"
+
+$(pwd)/build.sh
