@@ -1,8 +1,30 @@
-FROM philcryer/min-jessie
-
+FROM alpine:edge AS robotv-build
 MAINTAINER Alexander pipelka <alexander.pipelka@gmail.com>
 
-ARG DEBUG=
+ARG ROBOTV_VERSION=
+
+USER root
+
+RUN echo "http://dl-3.alpinelinux.org/alpine/edge/testing" >> /etc/apk/repositories
+RUN apk update && apk add vdr-dev build-base freetype-dev fontconfig-dev \
+	libjpeg-turbo-dev libcap-dev pugixml-dev curl-dev git bzip2 bash
+
+RUN mkdir -p /build
+WORKDIR /build
+
+RUN echo "building roboTV version '${ROBOTV_VERSION}'"
+
+RUN git clone -b ${ROBOTV_VERSION} https://github.com/pipelka/vdr-plugin-robotv.git
+RUN git clone https://github.com/vdr-projects/vdr-plugin-epgsearch.git
+RUN git clone https://github.com/rofafor/vdr-plugin-satip.git
+
+RUN for plugin in robotv epgsearch satip ; do \
+	cd /build/vdr-plugin-${plugin} && \
+	make -j 4 && make install && \
+	strip -s --strip-debug /usr/lib/vdr/libvdr-${plugin}.so.* ; \
+    done
+
+FROM alpine:edge AS robotv-server
 
 USER root
 
@@ -20,23 +42,12 @@ ENV DVBAPI_ENABLE="0" \
     LOGLEVEL=2 \
     TZ="Europe/Vienna"
 
-RUN apt-get update && \
-    apt-get install --no-install-recommends -y \
-	libfreetype6 libfontconfig1 libjpeg62-turbo \
-	libpugixml1 libcurl3 && \
-    apt-get clean -y && \
-    apt-get autoclean -y && \
-    apt-get autoremove -y && \
-    rm -rf /usr/share/locale/* && \
-    rm -rf /var/cache/debconf/*-old && \
-    rm -rf /var/lib/apt/lists/* && \
-    rm -rf /usr/share/doc/* \
-    rm -rf /usr/share/man
+RUN mkdir -p /usr/lib/vdr
+COPY --from=robotv-build /usr/lib/vdr/libvdr-*.so.* /usr/lib/vdr/
 
-
-RUN if [ "$DEBUG" = "1" ] ; then \
-      apt-get install --no-install-recommends -y gdb byobu screen tmux ; \
-    fi
+RUN echo "http://dl-3.alpinelinux.org/alpine/edge/testing" >> /etc/apk/repositories
+RUN apk update && apk add vdr vdr-plugin-dvbapi freetype fontconfig \
+	libjpeg-turbo libcap pugixml-dev libcurl
 
 RUN mkdir -p /opt && \
     mkdir -p /data && \
@@ -44,16 +55,11 @@ RUN mkdir -p /opt && \
     mkdir -p /opt/templates && \
     mkdir -p /timeshift
 
-COPY opt /opt/
 COPY bin/runvdr.sh /opt/vdr/
 COPY templates/diseqc.conf /opt/templates/
 COPY templates/sources.conf /opt/templates/
 COPY templates/channels.conf /opt/templates/
 
 RUN chmod +x /opt/vdr/runvdr.sh
-
-RUN if [ "$DEBUG" = "1" ] ; then \
-      touch /opt/vdr/.debug ; \
-    fi
 
 ENTRYPOINT [ "/opt/vdr/runvdr.sh" ]

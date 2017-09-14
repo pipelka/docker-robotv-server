@@ -3,8 +3,6 @@
 ROBOTV_VERSION=0.11.2
 DOCKER_BUILD=1
 
-IMAGE="pipelka/robotv-server:${ROBOTV_VERSION}-${DOCKER_BUILD}"
-
 DEBUG=0
 BRANCH=
 
@@ -13,8 +11,7 @@ usage() {
     echo ""
     echo "./build.sh"
     echo "\t-h --help             show this help"
-    echo "\t--debug               debug build"
-    echo "\t--branch=GIT_BRANCH   build branch 'GIT_BRANCH'"
+    echo "\t--version=GIT_REV     build branch / version 'GIT_REV'"
     echo ""
 }
 
@@ -26,11 +23,8 @@ while [ "$1" != "" ]; do
             usage
             exit
             ;;
-        --debug)
-            DEBUG=1
-            ;;
-        --branch)
-            BRANCH=${VALUE}
+        --version)
+            ROBOTV_VERSION=${VALUE}
             ;;
         *)
             echo "ERROR: unknown parameter \"$PARAM\""
@@ -46,19 +40,5 @@ rm -Rf opt
 docker build \
     --force-rm \
     --build-arg ROBOTV_VERSION=${ROBOTV_VERSION} \
-    --build-arg DEBUG=${DEBUG} \
-    --build-arg BRANCH=${BRANCH} \
-    -t pipelka/robotv-server-build:${ROBOTV_VERSION} \
-    -f Dockerfile.build .
-
-docker rm robotv-build >/dev/null 2>&1 || true
-docker create --name=robotv-build pipelka/robotv-server-build:${ROBOTV_VERSION}
-docker cp robotv-build:/opt .
-docker rm robotv-build
-
-docker build \
-    --force-rm \
-    --build-arg DEBUG=${DEBUG} \
-    -t ${IMAGE} .
-
-docker tag ${IMAGE} pipelka/robotv-server:latest
+    -t pipelka/robotv-server:${ROBOTV_VERSION}-${DOCKER_BUILD} \
+    -f Dockerfile .
