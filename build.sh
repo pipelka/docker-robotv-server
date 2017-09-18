@@ -42,3 +42,5 @@ docker build \
     --build-arg ROBOTV_VERSION=${ROBOTV_VERSION} \
     -t pipelka/robotv-server:${ROBOTV_VERSION}-${DOCKER_BUILD} \
     -f Dockerfile .
+
+docker tag pipelka/robotv-server:${ROBOTV_VERSION}-${DOCKER_BUILD} pipelka/robotv-server:latest

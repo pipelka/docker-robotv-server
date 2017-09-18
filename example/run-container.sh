@@ -5,5 +5,8 @@ docker run \
     -ti \
     --cap-add=SYS_NICE \
     -e SATIP_NUMDEVICES=1 \
+    -e DVBAPI_ENABLE=1 \
+    -e DVBAPI_OFFSET=3 \
     -p 34892:34892 \
-    pipelka/robotv-server:0.11.2-1
+    --net=host \
+    pipelka/robotv-server:latest
