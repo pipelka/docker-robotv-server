@@ -1,0 +1,11 @@
+--- vdr-2.3.8/Makefile.orig	2017-09-18 07:57:32.094269121 +0200
++++ vdr-2.3.8/Makefile	2017-09-18 07:58:05.262358068 +0200
+@@ -289,7 +289,7 @@
+ 	@mkdir -p $(DESTDIR)$(RESDIR)
+ 
+ install-conf:
+-	@cp -pn *.conf $(DESTDIR)$(CONFDIR)
++	@cp -p *.conf $(DESTDIR)$(CONFDIR)
+ 
+ # Documentation:
+ 

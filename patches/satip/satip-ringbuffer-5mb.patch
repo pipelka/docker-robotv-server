@@ -1,0 +1,13 @@
+diff --git a/common.h b/common.h
+index d5539a8..8e74661 100644
+--- a/common.h
++++ b/common.h
+@@ -17,7 +17,7 @@
+ 
+ #define SATIP_MAX_DEVICES                MAXDEVICES
+ 
+-#define SATIP_BUFFER_SIZE                KILOBYTE(2048)
++#define SATIP_BUFFER_SIZE                KILOBYTE(5120)
+ 
+ #define SATIP_DEVICE_INFO_ALL            0
+ #define SATIP_DEVICE_INFO_GENERAL        1

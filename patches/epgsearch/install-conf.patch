@@ -1,0 +1,11 @@
+--- epgsearch/Makefile.orig	2017-09-18 07:39:05.201775785 +0200
++++ epgsearch/Makefile	2017-09-18 07:39:22.169710145 +0200
+@@ -307,7 +307,7 @@
+ 
+ install-conf:
+ 	mkdir -p $(DESTDIR)$(CONFDIR)/plugins/$(PLUGIN)/conf.d
+-	cp -n conf/* $(DESTDIR)$(CONFDIR)/plugins/$(PLUGIN)
++	cp conf/* $(DESTDIR)$(CONFDIR)/plugins/$(PLUGIN)
+ 
+ install-doc:
+ 	mkdir -p $(DESTDIR)$(MANDIR)/man1

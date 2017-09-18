@@ -1,0 +1,72 @@
+From 3c8af6440e121197dee03f8cf2770fa368977b19 Mon Sep 17 00:00:00 2001
+From: Alexander Pipelka <alexander.pipelka@gmail.com>
+Date: Sun, 27 Aug 2017 21:12:45 +0200
+Subject: [PATCH] added UpdateRecordings() notification to cStatus
+
+---
+ recording.c | 2 ++
+ status.c    | 6 ++++++
+ status.h    | 3 +++
+ 3 files changed, 11 insertions(+)
+
+diff --git a/recording.c b/recording.c
+index ca0ec79..52691a1 100644
+--- a/recording.c
++++ b/recording.c
+@@ -27,6 +27,7 @@
+ #include "remux.h"
+ #include "ringbuffer.h"
+ #include "skins.h"
++#include "status.h"
+ #include "svdrp.h"
+ #include "tools.h"
+ #include "videodir.h"
+@@ -1495,6 +1496,7 @@ void cRecordings::TouchUpdate(void)
+   if (!needsUpdate)
+      lastUpdate = time(NULL); // make sure we don't trigger ourselves
+   BroadcastSVDRPCommand("UPDR");
++  cStatus::MsgUpdateRecordings();
+ }
+ 
+ bool cRecordings::NeedsUpdate(void)
+diff --git a/status.c b/status.c
+index 846c10c..cfb5af7 100644
+--- a/status.c
++++ b/status.c
+@@ -77,6 +77,12 @@ void cStatus::MsgSetSubtitleTrack(int Index, const char * const *Tracks)
+       sm->SetSubtitleTrack(Index, Tracks);
+ }
+ 
++void cStatus::MsgUpdateRecordings(void)
++{
++  for (cStatus *sm = statusMonitors.First(); sm; sm = statusMonitors.Next(sm))
++      sm->UpdateRecordings();
++}
++
+ void cStatus::MsgOsdClear(void)
+ {
+   for (cStatus *sm = statusMonitors.First(); sm; sm = statusMonitors.Next(sm))
+diff --git a/status.h b/status.h
+index c8a9e1f..f63ae79 100644
+--- a/status.h
++++ b/status.h
+@@ -71,6 +71,8 @@ protected:
+   virtual void SetSubtitleTrack(int Index, const char * const *Tracks) {}
+                // The subtitle track has been set to the one given by Index, which
+                // points into the Tracks array of strings. Tracks is NULL terminated.
++  virtual void UpdateRecordings(void) {}
++               // The list of recordings has been updated.
+   virtual void OsdClear(void) {}
+                // The OSD has been cleared.
+   virtual void OsdTitle(const char *Title) {}
+@@ -107,6 +109,7 @@ public:
+   static void MsgSetAudioTrack(int Index, const char * const *Tracks);
+   static void MsgSetAudioChannel(int AudioChannel);
+   static void MsgSetSubtitleTrack(int Index, const char * const *Tracks);
++  static void MsgUpdateRecordings();
+   static void MsgOsdClear(void);
+   static void MsgOsdTitle(const char *Title);
+   static void MsgOsdStatusMessage(const char *Message);
+-- 
+2.14.1
+
