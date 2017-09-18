@@ -25,6 +25,7 @@ sudo mkdir -p /srv/video
 
 ```
 docker run --rm -ti \
+    --cap-add=SYS_NICE \
     -e DVBAPI_ENABLE=1 \
     -e DVBAPI_HOST=192.168.100.200 \
     -e DVBAPI_PORT=2222 \
@@ -54,12 +55,12 @@ Configuration variables
 | DVBAPI_ENABLE | 0 | enable / disable the dvbapi plugin |
 | DVBAPI_HOST | 127.0.0.1 | dvbapi host |
 | DVBAPI_PORT | 2000 | dvbapi host port |
+| DVBAPI_OFFSET | 0 | dvbapi device offset |
 | SATIP_NUMDEVICES | 2 | number of dvb devices to open on the server |
-| SATIP_SERVER | | SAT<IP server address |
+| SATIP_SERVER | | SAT<IP server configuration |
 | ROBOTV_MAXTIMESHIFTSIZE | 4000000000 | Maximum timeshift ringbuffer size in bytes |
 | ROBOTV_PICONSURL |  | URL for the enigma channel icons |
 | ROBOTV_SERIESFOLDER | Serien | Folder for TV shows |
-| ROBOTV_CHANNELCACHE | true | Enable caching of channel pids |
 | ROBOTV_EPGIMAGEURL | | URL for EPG images |
 | TZ | Europe/Vienna | Timezone to use |
 | LOGLEVEL | 2 | 0 = no logging, 1 = errors only, 2 = errors and info, 3 = errors, info and debug |
@@ -75,14 +76,15 @@ Ports in use
 Examples
 --------
 
-- connect to SAT<IP server 192.168.100.201
+- connect to SAT<IP server (autodetect)
 
 ```
 docker run --rm -ti \
-    -e SATIP_SERVER=192.168.100.201 \
+    --cap-add=SYS_NICE \
     -v /srv/vdr:/data \
     -v /srv/video:/video \
     -p 34892:34892 \
+    --net=host \
     pipelka/robotv-server
 ```
 
@@ -90,11 +92,12 @@ docker run --rm -ti \
 
 ```
 docker run --rm -ti \
-    -e SATIP_SERVER=192.168.100.201 \
+    --cap-add=SYS_NICE \
+    -e SATIP_SERVER="192.168.100.201|DVBS2-4|Triax SatIP Converter" \
     -e SATIP_NUMDEVICES=4 \
     -v /srv/vdr:/data \
     -v /srv/video:/video \
-    -p 34892:34892 \
+    --net=host \
     pipelka/robotv-server
 ```
 
@@ -102,6 +105,7 @@ docker run --rm -ti \
 
 ```
 docker run --rm -ti \
+    --cap-add=SYS_NICE \
     -e DVBAPI_ENABLE=1 \
     -e DVBAPI_HOST=192.168.100.200 \
     -e DVBAPI_PORT=2222 \
@@ -116,25 +120,26 @@ docker run --rm -ti \
 
 ```
 docker run --rm -ti \
+    --cap-add=SYS_NICE \
     -e DVBAPI_ENABLE=1 \
     -e DVBAPI_HOST=192.168.100.200 \
     -e DVBAPI_PORT=2222 \
-    -e SATIP_SERVER=192.168.100.201 \
-    -e SATIP_NUMDEVICES=4 \
+    -e SATIP_SERVER="192.168.100.202|DVBS2-2|minisatip" \
     -e ROBOTV_PICONS=http://192.168.100.202/picons \
     -v /srv/vdr:/data \
     -v /srv/video:/video \
-    -p 34892:34892 \
+    --net=host \
     pipelka/robotv-server
 ```
 
 Building the image
 ------------------
 
-To keep the generated docker image as small as possible it is divided into two parts:
+To keep the generated docker image as small as possible it is built upon alpine linux.
+The dockerfile contains 2 stages for building the image
 
-- build the VDR and plugin binaries in a container (in a development environment)
-- install the generated binaries in a Debian 8 production environment
+- build the VDR and plugin binaries in a development "robotv-server-build" image
+- install the generated binaries in an alpine:3.6 production environment
 
 To build the image you just need to:
 
@@ -142,11 +147,9 @@ To build the image you just need to:
 ./build.sh
 ```
 
-The script will generate two images:
+The script will generate the image:
 ```
 REPOSITORY                    TAG                 IMAGE ID            CREATED             SIZE
-pipelka/robotv-server         latest              4ff7f5c23bcb        About an hour ago   114 MB
-pipelka/robotv-server-build   0.9.103             be6cb606e25e        About an hour ago   587 MB
+pipelka/robotv-server         0.11.2              ed28e2a9b390        2 minutes ago       16.6MB
+pipelka/robotv-server         latest              ed28e2a9b390        2 minutes ago       16.6MB
 ```
-
-Where "robotv-server-build" is the intermediate image containing the build environment.
