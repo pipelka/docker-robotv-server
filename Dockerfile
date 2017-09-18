@@ -2,26 +2,64 @@ FROM alpine:edge AS robotv-build
 MAINTAINER Alexander pipelka <alexander.pipelka@gmail.com>
 
 ARG ROBOTV_VERSION=
+ARG VDR_VERSION=2.3.8
 
 USER root
 
 RUN echo "http://dl-3.alpinelinux.org/alpine/edge/testing" >> /etc/apk/repositories
-RUN apk update && apk add vdr-dev build-base freetype-dev fontconfig-dev \
-	libjpeg-turbo-dev libcap-dev pugixml-dev curl-dev git bzip2 bash
+RUN apk update && apk add build-base freetype-dev fontconfig-dev gettext-dev \
+	libjpeg-turbo-dev libcap-dev pugixml-dev curl-dev git bzip2 libexecinfo-dev \
+	ncurses-dev bash
 
 RUN mkdir -p /build
 WORKDIR /build
 
 RUN echo "building roboTV version '${ROBOTV_VERSION}'"
 
-RUN git clone -b ${ROBOTV_VERSION} https://github.com/pipelka/vdr-plugin-robotv.git
-RUN git clone https://github.com/vdr-projects/vdr-plugin-epgsearch.git
-RUN git clone https://github.com/rofafor/vdr-plugin-satip.git
+RUN wget ftp://ftp.tvdr.de/vdr/Developer/vdr-${VDR_VERSION}.tar.bz2
+RUN tar -jxf vdr-${VDR_VERSION}.tar.bz2
+RUN git clone -b ${ROBOTV_VERSION} https://github.com/pipelka/vdr-plugin-robotv.git vdr-${VDR_VERSION}/PLUGINS/src/robotv
+RUN git clone https://github.com/manio/vdr-plugin-dvbapi.git vdr-${VDR_VERSION}/PLUGINS/src/dvbapi
+RUN git clone https://github.com/vdr-projects/vdr-plugin-epgsearch.git vdr-${VDR_VERSION}/PLUGINS/src/epgsearch
+RUN git clone https://github.com/rofafor/vdr-plugin-satip.git vdr-${VDR_VERSION}/PLUGINS/src/satip
+
+WORKDIR vdr-${VDR_VERSION}
+COPY templates/Make.* /build/vdr-${VDR_VERSION}/
+
+RUN mkdir -p /build/patches
+COPY patches/ /build/patches/
+
+RUN for patch in `ls /build/patches/vdr`; do \
+        echo ${patch} ; \
+        patch -p1 < /build/patches/vdr/${patch} ; \
+    done
+
+WORKDIR PLUGINS/src/epgsearch
+RUN patch -p1 < /build/patches/epgsearch/install-conf.patch
+
+WORKDIR ../satip
+RUN patch -p1 < /build/patches/satip/satip-ringbuffer-5mb.patch
+
+WORKDIR ../../..
+RUN make -j 4
+
+RUN mkdir -p /opt/vdr
+
+RUN make install
 
 RUN for plugin in robotv epgsearch satip ; do \
-	cd /build/vdr-plugin-${plugin} && \
-	make -j 4 && make install && \
-	strip -s --strip-debug /usr/lib/vdr/libvdr-${plugin}.so.* ; \
+        strip -s --strip-debug /opt/vdr/lib/libvdr-${plugin}.so.* ; \
+    done ; \
+    strip -s --strip-debug /opt/vdr/bin/vdr
+
+
+RUN rm -Rf /opt/vdr/man
+RUN rm -Rf /opt/vdr/locale/*
+
+ENV LIBS="dvbhddevice dvbsddevice epgtableid0 hello osddemo pictures rcu skincurses status svccli svcsvr svdrpdemo"
+RUN for lib in ${LIBS} ; do \
+    echo "removing /opt/vdr/lib/libvdr-$lib" ; \
+        rm -f /opt/vdr/lib/libvdr-${lib}* ; \
     done
 
 FROM alpine:edge AS robotv-server
@@ -31,6 +69,7 @@ USER root
 ENV DVBAPI_ENABLE="0" \
     DVBAPI_HOST="127.0.0.1" \
     DVBAPI_PORT="2000" \
+    DVBAPI_OFFSET=0 \
     SATIP_NUMDEVICES="2" \
     SATIP_SERVER="192.168.16.10" \
     ROBOTV_TIMESHIFTDIR="/video" \
@@ -42,12 +81,9 @@ ENV DVBAPI_ENABLE="0" \
     LOGLEVEL=2 \
     TZ="Europe/Vienna"
 
-RUN mkdir -p /usr/lib/vdr
-COPY --from=robotv-build /usr/lib/vdr/libvdr-*.so.* /usr/lib/vdr/
-
 RUN echo "http://dl-3.alpinelinux.org/alpine/edge/testing" >> /etc/apk/repositories
-RUN apk update && apk add vdr vdr-plugin-dvbapi freetype fontconfig \
-	libjpeg-turbo libcap pugixml-dev libcurl
+RUN apk update && apk add freetype fontconfig libintl libexecinfo \
+    libjpeg-turbo libcap pugixml libcurl
 
 RUN mkdir -p /opt && \
     mkdir -p /data && \
@@ -55,6 +91,7 @@ RUN mkdir -p /opt && \
     mkdir -p /opt/templates && \
     mkdir -p /timeshift
 
+COPY --from=robotv-build /opt/ /opt/
 COPY bin/runvdr.sh /opt/vdr/
 COPY templates/diseqc.conf /opt/templates/
 COPY templates/sources.conf /opt/templates/

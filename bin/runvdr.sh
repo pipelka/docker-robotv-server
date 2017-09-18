@@ -4,12 +4,7 @@ export LANG="en_US.UTF-8"
 
 CONFDIR=/data/etc
 
-rm -Rf /etc/vdr
-ln -sf ${CONFDIR} /etc/vdr
-rm -f /etc/vdr/conf.d
-
 mkdir -p ${CONFDIR}/conf.d
-
 echo "0.0.0.0/0" > ${CONFDIR}/svdrphosts.conf 
 
 [ ! -f ${CONFDIR}/channels.conf ] && cp /opt/templates/channels.conf ${CONFDIR}/
@@ -29,6 +24,7 @@ rm -f ${CONFDIR}/conf.d/40-dvbapi.conf
 
 if [ "${DVBAPI_ENABLE}" = "1" ] ; then 
     echo "[dvbapi]" > ${CONFDIR}/conf.d/40-dvbapi.conf
+    echo "-o ${DVBAPI_OFFSET}" >> ${CONFDIR}/conf.d/40-dvbapi.conf
 fi
 
 
@@ -42,7 +38,7 @@ if [ ! -z "${SATIP_NUMDEVICES}" ] ; then
 fi
 
 if [ ! -z "${SATIP_SERVER}" ] ; then
-    echo "-s ${SATIP_SERVER}" >> ${CONFDIR}/conf.d/50-satip.conf
+    echo "-s \"${SATIP_SERVER}\"" >> ${CONFDIR}/conf.d/50-satip.conf
 fi
 
 
@@ -54,8 +50,6 @@ if [ ! -f ${CONFDIR}/conf.d/00-vdr.conf ] ; then
     echo "--port=6419" >> ${CONFDIR}/conf.d/00-vdr.conf
     echo "--watchdog=60" >> ${CONFDIR}/conf.d/00-vdr.conf
     echo "--log=${LOGLEVEL}" >> ${CONFDIR}/conf.d/00-vdr.conf
-    echo "--video=/video" >> ${CONFDIR}/conf.d/00-vdr.conf
-    echo "--cachedir=/data/cache" >> ${CONFDIR}/conf.d/00-vdr.conf
 fi
 
 
@@ -84,8 +78,4 @@ if [ ! -z "${ROBOTV_EPGIMAGEURL}" ] ; then
     echo "EpgImageUrl = ${ROBOTV_EPGIMAGEURL}" >> ${CONFDIR}/plugins/robotv/robotv.conf
 fi
 
-mkdir -p /usr/share/locale
-mkdir -p /video
-mkdir -p /data/cache
-
-/usr/bin/vdr
+/opt/vdr/bin/vdr
