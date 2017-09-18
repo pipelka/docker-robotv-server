@@ -44,14 +44,11 @@ fi
 
 # VDR configuration
 
-if [ ! -f ${CONFDIR}/conf.d/00-vdr.conf ] ; then
-    echo "[vdr]" > ${CONFDIR}/conf.d/00-vdr.conf
-    echo "--chartab=ISO-8859-9" >> ${CONFDIR}/conf.d/00-vdr.conf
-    echo "--port=6419" >> ${CONFDIR}/conf.d/00-vdr.conf
-    echo "--watchdog=60" >> ${CONFDIR}/conf.d/00-vdr.conf
-    echo "--log=${LOGLEVEL}" >> ${CONFDIR}/conf.d/00-vdr.conf
-fi
-
+echo "[vdr]" > ${CONFDIR}/conf.d/00-vdr.conf
+echo "--chartab=ISO-8859-9" >> ${CONFDIR}/conf.d/00-vdr.conf
+echo "--port=6419" >> ${CONFDIR}/conf.d/00-vdr.conf
+echo "--watchdog=60" >> ${CONFDIR}/conf.d/00-vdr.conf
+echo "--log=${LOGLEVEL}" >> ${CONFDIR}/conf.d/00-vdr.conf
 
 
 # EPGSearch configuration
