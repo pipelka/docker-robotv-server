@@ -1,7 +1,9 @@
 #!/bin/sh
 
-ROBOTV_VERSION=0.12.0
-DOCKER_BUILD=1
+TOP=`dirname $0`
+VERSION=${TOP}/version
+
+[ -f ${VERSION} ] && . ${VERSION}
 
 DEBUG=0
 BRANCH=
@@ -11,7 +13,7 @@ usage() {
     echo ""
     echo "./build.sh"
     echo "\t-h --help             show this help"
-    echo "\t--version=GIT_REV     build branch / version 'GIT_REV'"
+    echo "\t--version=GIT_REV     build branch / version (default: ${ROBOTV_VERSION})"
     echo ""
 }
 
@@ -41,6 +43,6 @@ docker build \
     --force-rm \
     --build-arg ROBOTV_VERSION=${ROBOTV_VERSION} \
     -t pipelka/robotv-server:${ROBOTV_VERSION}-${DOCKER_BUILD} \
-    -f Dockerfile .
+    -f ${TOP}/Dockerfile ${TOP}
 
 docker tag pipelka/robotv-server:${ROBOTV_VERSION}-${DOCKER_BUILD} pipelka/robotv-server:latest
