@@ -21,7 +21,7 @@ RUN tar -jxf vdr-${VDR_VERSION}.tar.bz2
 RUN git clone -b ${ROBOTV_VERSION} https://github.com/pipelka/vdr-plugin-robotv.git vdr-${VDR_VERSION}/PLUGINS/src/robotv
 RUN git clone https://github.com/manio/vdr-plugin-dvbapi.git vdr-${VDR_VERSION}/PLUGINS/src/dvbapi
 RUN git clone https://github.com/vdr-projects/vdr-plugin-epgsearch.git vdr-${VDR_VERSION}/PLUGINS/src/epgsearch
-RUN git clone https://github.com/rofafor/vdr-plugin-satip.git vdr-${VDR_VERSION}/PLUGINS/src/satip
+RUN git clone -b sectionfilter-send https://github.com/pipelka/vdr-plugin-satip.git vdr-${VDR_VERSION}/PLUGINS/src/satip
 
 WORKDIR vdr-${VDR_VERSION}
 COPY templates/Make.* /build/vdr-${VDR_VERSION}/
@@ -38,7 +38,10 @@ WORKDIR PLUGINS/src/epgsearch
 RUN patch -p1 < /build/patches/epgsearch/install-conf.patch
 
 WORKDIR ../satip
-RUN patch -p1 < /build/patches/satip/satip-ringbuffer-5mb.patch
+RUN for patch in `ls /build/patches/satip`; do \
+        echo ${patch} ; \
+        patch -p1 < /build/patches/satip/${patch} ; \
+    done
 
 WORKDIR ../../..
 RUN make -j 4
