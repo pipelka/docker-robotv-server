@@ -12,9 +12,13 @@ echo "0.0.0.0/0" > ${CONFDIR}/svdrphosts.conf
 [ ! -f ${CONFDIR}/diseqc.conf ] && cp /opt/templates/diseqc.conf ${CONFDIR}/
 
 
+# UpdateChannels
+
+echo "UpdateChannels = ${VDR_UPDATECHANNELS}" > ${CONFDIR}/setup.conf
+
 # DVBAPI configuration
 
-echo "dvbapi.LogLevel = 2" > ${CONFDIR}/setup.conf
+echo "dvbapi.LogLevel = 2" >> ${CONFDIR}/setup.conf
 echo "dvbapi.OSCamHost = ${DVBAPI_HOST}" >> ${CONFDIR}/setup.conf
 echo "dvbapi.OSCamPort = ${DVBAPI_PORT}" >> ${CONFDIR}/setup.conf
 
@@ -48,7 +52,7 @@ echo "[vdr]" > ${CONFDIR}/conf.d/00-vdr.conf
 echo "--chartab=ISO-8859-9" >> ${CONFDIR}/conf.d/00-vdr.conf
 echo "--port=6419" >> ${CONFDIR}/conf.d/00-vdr.conf
 echo "--watchdog=60" >> ${CONFDIR}/conf.d/00-vdr.conf
-echo "--log=${LOGLEVEL}" >> ${CONFDIR}/conf.d/00-vdr.conf
+echo "--log=${VDR_LOGLEVEL}" >> ${CONFDIR}/conf.d/00-vdr.conf
 
 
 # EPGSearch configuration
