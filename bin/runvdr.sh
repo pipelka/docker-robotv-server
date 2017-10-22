@@ -60,6 +60,16 @@ echo "--log=${VDR_LOGLEVEL}" >> ${CONFDIR}/conf.d/00-vdr.conf
 echo "[epgsearch]" > ${CONFDIR}/conf.d/50-epgsearch.conf
 
 
+# streamdev-server configuration
+
+mkdir -p ${CONFDIR}/plugins/streamdev-server
+
+echo "[streamdev-server]" > ${CONFDIR}/conf.d/50-streamdev-server.conf
+echo "0.0.0.0/0" > ${CONFDIR}/plugins/streamdev-server/streamdevhosts.conf
+echo "streamdev-server.AllowSuspend = 1" >> ${CONFDIR}/setup.conf
+echo "streamdev-server.SuspendMode = 1" >> ${CONFDIR}/setup.conf
+
+
 # RoboTV configuration
 
 mkdir -p ${CONFDIR}/plugins/robotv

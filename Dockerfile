@@ -22,6 +22,7 @@ RUN git clone -b ${ROBOTV_VERSION} https://github.com/pipelka/vdr-plugin-robotv.
 RUN git clone https://github.com/manio/vdr-plugin-dvbapi.git vdr-${VDR_VERSION}/PLUGINS/src/dvbapi
 RUN git clone https://github.com/vdr-projects/vdr-plugin-epgsearch.git vdr-${VDR_VERSION}/PLUGINS/src/epgsearch
 RUN git clone -b robotv https://github.com/pipelka/vdr-plugin-satip.git vdr-${VDR_VERSION}/PLUGINS/src/satip
+RUN git clone https://github.com/vdr-projects/vdr-plugin-streamdev.git vdr-${VDR_VERSION}/PLUGINS/src/streamdev
 
 WORKDIR vdr-${VDR_VERSION}
 COPY templates/Make.* /build/vdr-${VDR_VERSION}/
@@ -44,7 +45,7 @@ RUN mkdir -p /opt/vdr
 
 RUN make install
 
-RUN for plugin in robotv epgsearch satip ; do \
+RUN for plugin in robotv epgsearch satip streamdev-server ; do \
         strip -s --strip-debug /opt/vdr/lib/libvdr-${plugin}.so.* ; \
     done ; \
     strip -s --strip-debug /opt/vdr/bin/vdr
@@ -53,7 +54,7 @@ RUN for plugin in robotv epgsearch satip ; do \
 RUN rm -Rf /opt/vdr/man
 RUN rm -Rf /opt/vdr/locale/*
 
-ENV LIBS="dvbhddevice dvbsddevice epgtableid0 hello osddemo pictures rcu skincurses status svccli svcsvr svdrpdemo"
+ENV LIBS="dvbhddevice dvbsddevice epgtableid0 hello osddemo pictures rcu skincurses status svccli svcsvr svdrpdemo streamdev-client"
 RUN for lib in ${LIBS} ; do \
     echo "removing /opt/vdr/lib/libvdr-$lib" ; \
         rm -f /opt/vdr/lib/libvdr-${lib}* ; \
