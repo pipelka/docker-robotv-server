@@ -21,7 +21,7 @@ RUN tar -jxf vdr-${VDR_VERSION}.tar.bz2
 RUN git clone -b ${ROBOTV_VERSION} https://github.com/pipelka/vdr-plugin-robotv.git vdr-${VDR_VERSION}/PLUGINS/src/robotv
 RUN git clone https://github.com/manio/vdr-plugin-dvbapi.git vdr-${VDR_VERSION}/PLUGINS/src/dvbapi
 RUN git clone https://github.com/vdr-projects/vdr-plugin-epgsearch.git vdr-${VDR_VERSION}/PLUGINS/src/epgsearch
-RUN git clone -b robotv https://github.com/pipelka/vdr-plugin-satip.git vdr-${VDR_VERSION}/PLUGINS/src/satip
+RUN git clone https://github.com/rofafor/vdr-plugin-satip.git vdr-${VDR_VERSION}/PLUGINS/src/satip
 RUN git clone https://github.com/vdr-projects/vdr-plugin-streamdev.git vdr-${VDR_VERSION}/PLUGINS/src/streamdev
 
 WORKDIR vdr-${VDR_VERSION}
@@ -77,7 +77,8 @@ ENV DVBAPI_ENABLE="0" \
     ROBOTV_CHANNELCACHE="true" \
     ROBOTV_EPGIMAGEURL= \
     VDR_LOGLEVEL=2 \
-    VDR_UPDATECHANNELS=3 \
+    VDR_UPDATECHANNELS=5 \
+    VDR_DISEQC=0 \
     TZ="Europe/Vienna"
 
 RUN echo "http://dl-3.alpinelinux.org/alpine/edge/testing" >> /etc/apk/repositories

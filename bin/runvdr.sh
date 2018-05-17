@@ -10,11 +10,15 @@ echo "0.0.0.0/0" > ${CONFDIR}/svdrphosts.conf
 [ ! -f ${CONFDIR}/channels.conf ] && cp /opt/templates/channels.conf ${CONFDIR}/
 [ ! -f ${CONFDIR}/sources.conf ] && cp /opt/templates/sources.conf ${CONFDIR}/
 [ ! -f ${CONFDIR}/diseqc.conf ] && cp /opt/templates/diseqc.conf ${CONFDIR}/
+[ ! -f ${CONFDIR}/scr.conf ] && cp /opt/templates/scr.conf ${CONFDIR}/
 
+# DiSeqC
+
+echo "DiSEqC = ${VDR_DISEQC}" > ${CONFDIR}/setup.conf
 
 # UpdateChannels
 
-echo "UpdateChannels = ${VDR_UPDATECHANNELS}" > ${CONFDIR}/setup.conf
+echo "UpdateChannels = ${VDR_UPDATECHANNELS}" >> ${CONFDIR}/setup.conf
 
 # DVBAPI configuration
 

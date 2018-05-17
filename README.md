@@ -63,7 +63,8 @@ Configuration variables
 | ROBOTV_SERIESFOLDER | Serien | Folder for TV shows |
 | ROBOTV_EPGIMAGEURL | | URL for EPG images |
 | VDR_LOGLEVEL | 2 | 0 = no logging, 1 = errors only, 2 = errors and info, 3 = errors, info and debug |
-| VDR_UPDATECHANNELS | 3 | 0 = disables, 1 = channel names only, 2 = pids only, 3 = channels names and pids, 4 = add new channels, 5 = add new transponders |
+| VDR_UPDATECHANNELS | 5 | 0 = disables, 1 = channel names only, 2 = pids only, 3 = channels names and pids, 4 = add new channels, 5 = add new transponders |
+| VDR_DISEQC | 0 | 0 = DisEqC disabled | 1 = enabled |
 | TZ | Europe/Vienna | Timezone to use |
 
 Ports in use
