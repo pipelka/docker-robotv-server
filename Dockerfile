@@ -2,7 +2,7 @@ FROM alpine:edge AS robotv-build
 MAINTAINER Alexander pipelka <alexander.pipelka@gmail.com>
 
 ARG ROBOTV_VERSION=
-ARG VDR_VERSION=2.3.8
+ARG VDR_VERSION=2.4.0
 
 USER root
 
@@ -16,7 +16,7 @@ WORKDIR /build
 
 RUN echo "building roboTV version '${ROBOTV_VERSION}'"
 
-RUN wget ftp://ftp.tvdr.de/vdr/Developer/vdr-${VDR_VERSION}.tar.bz2
+RUN wget ftp://ftp.tvdr.de/vdr/vdr-${VDR_VERSION}.tar.bz2
 RUN tar -jxf vdr-${VDR_VERSION}.tar.bz2
 RUN git clone -b ${ROBOTV_VERSION} https://github.com/pipelka/vdr-plugin-robotv.git vdr-${VDR_VERSION}/PLUGINS/src/robotv
 RUN git clone https://github.com/manio/vdr-plugin-dvbapi.git vdr-${VDR_VERSION}/PLUGINS/src/dvbapi
